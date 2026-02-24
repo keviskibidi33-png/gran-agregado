@@ -76,12 +76,45 @@ const parseNum = (v: unknown): number | null => {
     return Number.isFinite(n) ? n : null
 }
 
+const getCurrentYearShort = () => new Date().getFullYear().toString().slice(-2)
+
+const normalizeFlexibleDate = (raw: string): string => {
+    const value = raw.trim()
+    if (!value) return ''
+
+    const digits = value.replace(/\D/g, '')
+    const year = getCurrentYearShort()
+    const pad2 = (part: string) => part.padStart(2, '0').slice(-2)
+    const build = (d: string, m: string, y: string = year) => `${pad2(d)}/${pad2(m)}/${pad2(y)}`
+
+    if (value.includes('/')) {
+        const [d = '', m = '', yRaw = ''] = value.split('/').map((part) => part.trim())
+        if (!d || !m) return value
+        let yy = yRaw.replace(/\D/g, '')
+        if (yy.length === 4) yy = yy.slice(-2)
+        if (yy.length === 1) yy = `0${yy}`
+        if (!yy) yy = year
+        return build(d, m, yy)
+    }
+
+    if (digits.length === 2) return build(digits[0], digits[1])
+    if (digits.length === 3) return build(digits[0], digits.slice(1, 3))
+    if (digits.length === 4) return build(digits.slice(0, 2), digits.slice(2, 4))
+    if (digits.length === 5) return build(digits[0], digits.slice(1, 3), digits.slice(3, 5))
+    if (digits.length === 6) return build(digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6))
+    if (digits.length >= 8) return build(digits.slice(0, 2), digits.slice(2, 4), digits.slice(6, 8))
+
+    return value
+}
+
 const getEnsayoId = (): number | null => {
     const raw = new URLSearchParams(window.location.search).get('ensayo_id')
     if (!raw) return null
     const n = Number(raw)
     return Number.isInteger(n) && n > 0 ? n : null
 }
+
+type DateFieldKey = 'fecha_ensayo' | 'revisado_fecha' | 'aprobado_fecha'
 
 export default function GranAgregadoForm() {
     const [form, setForm] = useState<GranAgregadoPayload>(() => initialState())
@@ -166,6 +199,15 @@ export default function GranAgregadoForm() {
 
     const setField = useCallback(<K extends keyof GranAgregadoPayload>(key: K, value: GranAgregadoPayload[K]) => {
         setForm((prev) => ({ ...prev, [key]: value }))
+    }, [])
+
+    const applyFormattedField = useCallback((key: DateFieldKey, formatter: (raw: string) => string) => {
+        setForm((prev) => {
+            const current = String(prev[key] ?? '')
+            const formatted = formatter(current)
+            if (formatted === current) return prev
+            return { ...prev, [key]: formatted }
+        })
     }, [])
 
     const setSieveValue = useCallback((index: number, raw: string) => {
@@ -260,13 +302,20 @@ export default function GranAgregadoForm() {
         [derivedError, editingEnsayoId, form],
     )
 
-    const renderText = (label: string, value: string | undefined | null, onChange: (v: string) => void, placeholder?: string) => (
+    const renderText = (
+        label: string,
+        value: string | undefined | null,
+        onChange: (v: string) => void,
+        placeholder?: string,
+        onBlur?: () => void,
+    ) => (
         <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">{label}</label>
             <input
                 type="text"
                 value={value || ''}
                 onChange={(e) => onChange(e.target.value)}
+                onBlur={onBlur}
                 placeholder={placeholder}
                 autoComplete="off"
                 data-lpignore="true"
@@ -338,7 +387,7 @@ export default function GranAgregadoForm() {
                         <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-3">
                             {renderText('Muestra *', form.muestra, (v) => setField('muestra', v), '123-SU-26')}
                             {renderText('N OT *', form.numero_ot, (v) => setField('numero_ot', v), '1234-26')}
-                            {renderText('Fecha ensayo', form.fecha_ensayo, (v) => setField('fecha_ensayo', v), 'DD/MM/AA')}
+                            {renderText('Fecha ensayo', form.fecha_ensayo, (v) => setField('fecha_ensayo', v), 'DD/MM/AA', () => applyFormattedField('fecha_ensayo', normalizeFlexibleDate))}
                             {renderText('Realizado por *', form.realizado_por, (v) => setField('realizado_por', v))}
                         </div>
                     </div>
@@ -438,8 +487,8 @@ export default function GranAgregadoForm() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {renderSelect('Revisado por', form.revisado_por || '-', REVISADO, (v) => setField('revisado_por', v))}
                                     {renderSelect('Aprobado por', form.aprobado_por || '-', APROBADO, (v) => setField('aprobado_por', v))}
-                                    {renderText('Fecha revisado', form.revisado_fecha || '', (v) => setField('revisado_fecha', v), 'DD/MM/AA')}
-                                    {renderText('Fecha aprobado', form.aprobado_fecha || '', (v) => setField('aprobado_fecha', v), 'DD/MM/AA')}
+                                    {renderText('Fecha revisado', form.revisado_fecha || '', (v) => setField('revisado_fecha', v), 'DD/MM/AA', () => applyFormattedField('revisado_fecha', normalizeFlexibleDate))}
+                                    {renderText('Fecha aprobado', form.aprobado_fecha || '', (v) => setField('aprobado_fecha', v), 'DD/MM/AA', () => applyFormattedField('aprobado_fecha', normalizeFlexibleDate))}
                                 </div>
                             </div>
                         </div>
