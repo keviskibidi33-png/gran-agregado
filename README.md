@@ -30,3 +30,22 @@ Microfrontend del módulo **Granulometría de Agregados ASTM C136/C136M-25** par
 npm install
 npm run dev
 ```
+
+## Cambios recientes (Febrero 2026)
+
+- Normalización inteligente en `onBlur` para encabezado:
+  - `Muestra`: `555` -> `555-SU-26`
+  - `N OT`: `555` -> `555-26`
+- Fechas inteligentes (igual estándar que CBR/Proctor):
+  - `fecha_ensayo`, `revisado_fecha`, `aprobado_fecha`
+  - Ejemplos: `1202` -> `12/02/26`, `1/2` -> `01/02/26`
+- Panel lateral tipo Proctor agregado para control de progreso:
+  - avance general (%)
+  - estado por secciones (`OK` / `Pend.`)
+  - resumen de tamices y control de error
+
+## Validación recomendada
+
+- Validar formato automático de `Muestra`, `N OT` y fechas al salir del input.
+- Completar datos de granulometría y verificar actualización en vivo del panel lateral.
+- Guardar y descargar para validar ciclo completo.

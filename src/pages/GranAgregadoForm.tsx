@@ -78,6 +78,40 @@ const parseNum = (v: unknown): number | null => {
 
 const getCurrentYearShort = () => new Date().getFullYear().toString().slice(-2)
 
+const normalizeMuestraCode = (raw: string): string => {
+    const value = raw.trim().toUpperCase()
+    if (!value) return ''
+
+    const compact = value.replace(/\s+/g, '')
+    const year = getCurrentYearShort()
+    const match = compact.match(/^(\d+)(?:-SU)?(?:-(\d{2}))?$/)
+    if (match) {
+        return `${match[1]}-SU-${match[2] || year}`
+    }
+    return value
+}
+
+const normalizeNumeroOtCode = (raw: string): string => {
+    const value = raw.trim().toUpperCase()
+    if (!value) return ''
+
+    const compact = value.replace(/\s+/g, '')
+    const year = getCurrentYearShort()
+    const patterns = [
+        /^(?:N?OT-)?(\d+)(?:-(\d{2}))?$/,
+        /^(\d+)(?:-(?:N?OT))?(?:-(\d{2}))?$/,
+    ]
+
+    for (const pattern of patterns) {
+        const match = compact.match(pattern)
+        if (match) {
+            return `${match[1]}-${match[2] || year}`
+        }
+    }
+
+    return value
+}
+
 const normalizeFlexibleDate = (raw: string): string => {
     const value = raw.trim()
     if (!value) return ''
@@ -114,7 +148,7 @@ const getEnsayoId = (): number | null => {
     return Number.isInteger(n) && n > 0 ? n : null
 }
 
-type DateFieldKey = 'fecha_ensayo' | 'revisado_fecha' | 'aprobado_fecha'
+type FormattedFieldKey = 'muestra' | 'numero_ot' | 'fecha_ensayo' | 'revisado_fecha' | 'aprobado_fecha'
 
 export default function GranAgregadoForm() {
     const [form, setForm] = useState<GranAgregadoPayload>(() => initialState())
@@ -201,7 +235,7 @@ export default function GranAgregadoForm() {
         setForm((prev) => ({ ...prev, [key]: value }))
     }, [])
 
-    const applyFormattedField = useCallback((key: DateFieldKey, formatter: (raw: string) => string) => {
+    const applyFormattedField = useCallback((key: FormattedFieldKey, formatter: (raw: string) => string) => {
         setForm((prev) => {
             const current = String(prev[key] ?? '')
             const formatted = formatter(current)
@@ -385,8 +419,8 @@ export default function GranAgregadoForm() {
                             <h2 className="text-sm font-semibold text-foreground">Encabezado</h2>
                         </div>
                         <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-                            {renderText('Muestra *', form.muestra, (v) => setField('muestra', v), '123-SU-26')}
-                            {renderText('N OT *', form.numero_ot, (v) => setField('numero_ot', v), '1234-26')}
+                            {renderText('Muestra *', form.muestra, (v) => setField('muestra', v), '123-SU-26', () => applyFormattedField('muestra', normalizeMuestraCode))}
+                            {renderText('N OT *', form.numero_ot, (v) => setField('numero_ot', v), '1234-26', () => applyFormattedField('numero_ot', normalizeNumeroOtCode))}
                             {renderText('Fecha ensayo', form.fecha_ensayo, (v) => setField('fecha_ensayo', v), 'DD/MM/AA', () => applyFormattedField('fecha_ensayo', normalizeFlexibleDate))}
                             {renderText('Realizado por *', form.realizado_por, (v) => setField('realizado_por', v))}
                         </div>
