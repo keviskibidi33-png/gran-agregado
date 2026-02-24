@@ -1,13 +1,12 @@
 services:
-  proctor-frontend:
+  gran-agregado-frontend:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=${VITE_API_URL:-https://api.geofal.com.pe}
-    container_name: proctor-crm-frontend
-    ports:
-      - "3009:80"
+    expose:
+      - "80"
     restart: always
     networks:
       - coolify
