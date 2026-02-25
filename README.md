@@ -1,15 +1,15 @@
-# Gran Agregado CRM Frontend
+# EquiArena CRM Frontend
 
-Microfrontend del módulo **Granulometría de Agregados ASTM C136/C136M-25** para Geofal.
+Microfrontend del módulo **Equivalente de Arena ASTM D2419-22** para Geofal.
 
-- Dominio productivo: `https://gran-agregado.geofal.com.pe`
-- Backend API: `https://api.geofal.com.pe` (rutas `/api/gran-agregado`)
+- Dominio productivo: `https://equiarena.geofal.com.pe`
+- Backend API: `https://api.geofal.com.pe` (rutas `/api/equi-arena`)
 
 ## Objetivo
 
-- Registrar/editar ensayos de Gran Agregado.
+- Registrar/editar ensayos de EquiArena.
 - Guardar estado en BD (`EN PROCESO`/`COMPLETO`).
-- Exportar Excel con plantilla oficial `Template_GranAgregado.xlsx`.
+- Exportar Excel con plantilla oficial `Template_EquiArena.xlsx`.
 - Cerrar modal del CRM al finalizar guardado.
 
 ## Stack
@@ -31,21 +31,16 @@ npm install
 npm run dev
 ```
 
-## Cambios recientes (Febrero 2026)
+## Alcance funcional
 
-- Normalización inteligente en `onBlur` para encabezado:
-  - `Muestra`: `555` -> `555-SU-26`
-  - `N OT`: `555` -> `555-26`
-- Fechas inteligentes (igual estándar que CBR/Proctor):
-  - `fecha_ensayo`, `revisado_fecha`, `aprobado_fecha`
-  - Ejemplos: `1202` -> `12/02/26`, `1/2` -> `01/02/26`
-- Panel lateral tipo Proctor agregado para control de progreso:
-  - avance general (%)
-  - estado por secciones (`OK` / `Pend.`)
-  - resumen de tamices y control de error
+- Encabezado (`Muestra`, `N OT`, `Fecha`, `Realizado`).
+- Condiciones de ensayo (tipo de muestra, método, preparación, temperatura, masa).
+- Captura de 3 pruebas (tiempos + lecturas de arcilla/arena).
+- Cálculo automático de EA por prueba y promedio.
+- Equipos, observaciones y cierre (revisado/aprobado).
 
 ## Validación recomendada
 
 - Validar formato automático de `Muestra`, `N OT` y fechas al salir del input.
-- Completar datos de granulometría y verificar actualización en vivo del panel lateral.
+- Completar datos de pruebas y verificar cálculo de EA promedio.
 - Guardar y descargar para validar ciclo completo.

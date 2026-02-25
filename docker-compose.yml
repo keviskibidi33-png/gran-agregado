@@ -1,5 +1,5 @@
 services:
-  gran-agregado-frontend:
+  equi-arena-frontend:
     build:
       context: .
       dockerfile: Dockerfile
