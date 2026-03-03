@@ -400,8 +400,8 @@ export default function GranAgregadoForm() {
                                     {renderNum('Masa muestra seco inicial total (g)', form.masa_muestra_seca_inicial_total_fraccionada_g, (v) => setField('masa_muestra_seca_inicial_total_fraccionada_g', parseNum(v)))}
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-                                <div className="rounded-xl border border-slate-300 bg-slate-50">
+                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">
+                                <div className="rounded-xl border border-slate-300 bg-slate-50 self-start">
                                     <div className="px-3 py-2 border-b border-slate-300 bg-slate-100">
                                         <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Grueso</h3>
                                     </div>
@@ -410,7 +410,7 @@ export default function GranAgregadoForm() {
                                         {renderNum('Masa muestra seca constante (g)', form.masa_muestra_seca_constante_grueso_g, (v) => setField('masa_muestra_seca_constante_grueso_g', parseNum(v)))}
                                     </div>
                                 </div>
-                                <div className="rounded-xl border border-slate-300 bg-slate-50">
+                                <div className="rounded-xl border border-slate-300 bg-slate-50 self-start">
                                     <div className="px-3 py-2 border-b border-slate-300 bg-slate-100">
                                         <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Fino</h3>
                                     </div>
