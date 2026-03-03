@@ -380,22 +380,50 @@ export default function GranAgregadoForm() {
                                 {renderText('Tamaño máximo visual (in)', form.tamano_maximo_particula_visual_in, (v) => setField('tamano_maximo_particula_visual_in', v))}
                                 {renderText('Forma de la partícula', form.forma_particula, (v) => setField('forma_particula', v))}
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-                                {renderNum('Global: masa húmeda inicial (g)', form.masa_muestra_humeda_inicial_total_global_g, (v) => setField('masa_muestra_humeda_inicial_total_global_g', parseNum(v)))}
-                                {renderNum('Global: masa seca (g)', form.masa_muestra_seca_global_g, (v) => setField('masa_muestra_seca_global_g', parseNum(v)))}
-                                {renderNum('Global: masa seca constante (g)', form.masa_muestra_seca_constante_global_g, (v) => setField('masa_muestra_seca_constante_global_g', parseNum(v)))}
-                                {renderNum('Global: masa seca lavada (g)', form.masa_muestra_seca_lavada_global_g, (v) => setField('masa_muestra_seca_lavada_global_g', parseNum(v)))}
-                                {renderNum('Frac: masa húmeda inicial total (g)', form.masa_muestra_humeda_inicial_total_fraccionada_g, (v) => setField('masa_muestra_humeda_inicial_total_fraccionada_g', parseNum(v)))}
-                                {renderNum('Frac: masa seca inicial total (g)', form.masa_muestra_seca_inicial_total_fraccionada_g, (v) => setField('masa_muestra_seca_inicial_total_fraccionada_g', parseNum(v)))}
-                                {renderNum('Frac: masa seca grueso (g)', form.masa_muestra_seca_grueso_g, (v) => setField('masa_muestra_seca_grueso_g', parseNum(v)))}
-                                {renderNum('Frac: masa seca constante grueso (g)', form.masa_muestra_seca_constante_grueso_g, (v) => setField('masa_muestra_seca_constante_grueso_g', parseNum(v)))}
-                                {renderNum('Frac: masa húmeda fino (g)', form.masa_muestra_humeda_fino_g, (v) => setField('masa_muestra_humeda_fino_g', parseNum(v)))}
-                                {renderNum('Frac: masa seca fino (g)', form.masa_muestra_seca_fino_g, (v) => setField('masa_muestra_seca_fino_g', parseNum(v)))}
-                                {renderNum('Frac: masa húmeda fracción (g)', form.masa_muestra_humeda_fraccion_g, (v) => setField('masa_muestra_humeda_fraccion_g', parseNum(v)))}
-                                {renderNum('Frac: masa seca fracción (g)', form.masa_muestra_seca_fraccion_g, (v) => setField('masa_muestra_seca_fraccion_g', parseNum(v)))}
-                                {renderNum('Frac: masa seca constante fracción (g)', form.masa_muestra_seca_constante_fraccion_g, (v) => setField('masa_muestra_seca_constante_fraccion_g', parseNum(v)))}
-                                {renderNum('Frac: contenido humedad (%)', form.contenido_humedad_fraccion_pct, (v) => setField('contenido_humedad_fraccion_pct', parseNum(v)))}
-                                {renderNum('Frac: masa seca lavada (g)', form.masa_muestra_seca_lavada_fraccion_g, (v) => setField('masa_muestra_seca_lavada_fraccion_g', parseNum(v)))}
+                            <div className="rounded-xl border border-slate-300 bg-slate-50">
+                                <div className="px-3 py-2 border-b border-slate-300 bg-slate-100">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Granulometría Global</h3>
+                                </div>
+                                <div className="p-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+                                    {renderNum('Masa húmeda inicial total (g)', form.masa_muestra_humeda_inicial_total_global_g, (v) => setField('masa_muestra_humeda_inicial_total_global_g', parseNum(v)))}
+                                    {renderNum('Masa muestra seca (g)', form.masa_muestra_seca_global_g, (v) => setField('masa_muestra_seca_global_g', parseNum(v)))}
+                                    {renderNum('Masa muestra seca constante (g)', form.masa_muestra_seca_constante_global_g, (v) => setField('masa_muestra_seca_constante_global_g', parseNum(v)))}
+                                    {renderNum('Masa muestra seca lavada (g)', form.masa_muestra_seca_lavada_global_g, (v) => setField('masa_muestra_seca_lavada_global_g', parseNum(v)))}
+                                </div>
+                            </div>
+                            <div className="rounded-xl border border-slate-300 bg-slate-50">
+                                <div className="px-3 py-2 border-b border-slate-300 bg-slate-100">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Granulometría Fraccionada</h3>
+                                </div>
+                                <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {renderNum('Masa húmeda inicial total (g)', form.masa_muestra_humeda_inicial_total_fraccionada_g, (v) => setField('masa_muestra_humeda_inicial_total_fraccionada_g', parseNum(v)))}
+                                    {renderNum('Masa muestra seco inicial total (g)', form.masa_muestra_seca_inicial_total_fraccionada_g, (v) => setField('masa_muestra_seca_inicial_total_fraccionada_g', parseNum(v)))}
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+                                <div className="rounded-xl border border-slate-300 bg-slate-50">
+                                    <div className="px-3 py-2 border-b border-slate-300 bg-slate-100">
+                                        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Grueso</h3>
+                                    </div>
+                                    <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {renderNum('Masa muestra seca (g)', form.masa_muestra_seca_grueso_g, (v) => setField('masa_muestra_seca_grueso_g', parseNum(v)))}
+                                        {renderNum('Masa muestra seca constante (g)', form.masa_muestra_seca_constante_grueso_g, (v) => setField('masa_muestra_seca_constante_grueso_g', parseNum(v)))}
+                                    </div>
+                                </div>
+                                <div className="rounded-xl border border-slate-300 bg-slate-50">
+                                    <div className="px-3 py-2 border-b border-slate-300 bg-slate-100">
+                                        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Fino</h3>
+                                    </div>
+                                    <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {renderNum('Masa muestra húmedo fino (g)', form.masa_muestra_humeda_fino_g, (v) => setField('masa_muestra_humeda_fino_g', parseNum(v)))}
+                                        {renderNum('Masa muestra seco fino (g)', form.masa_muestra_seca_fino_g, (v) => setField('masa_muestra_seca_fino_g', parseNum(v)))}
+                                        {renderNum('Masa muestra húmedo fracción (g)', form.masa_muestra_humeda_fraccion_g, (v) => setField('masa_muestra_humeda_fraccion_g', parseNum(v)))}
+                                        {renderNum('Masa muestra seco fracción (g)', form.masa_muestra_seca_fraccion_g, (v) => setField('masa_muestra_seca_fraccion_g', parseNum(v)))}
+                                        {renderNum('Masa muestra seco constante fracción (g)', form.masa_muestra_seca_constante_fraccion_g, (v) => setField('masa_muestra_seca_constante_fraccion_g', parseNum(v)))}
+                                        {renderNum('Contenido humedad fracción (%)', form.contenido_humedad_fraccion_pct, (v) => setField('contenido_humedad_fraccion_pct', parseNum(v)))}
+                                        {renderNum('Masa muestra seco lavado fracción (g)', form.masa_muestra_seca_lavada_fraccion_g, (v) => setField('masa_muestra_seca_lavada_fraccion_g', parseNum(v)))}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
