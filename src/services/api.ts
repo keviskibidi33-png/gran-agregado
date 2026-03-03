@@ -1,19 +1,19 @@
-import axios from "axios"
+import axios from 'axios'
 import type {
-    EquiArenaPayload,
-    EquiArenaSaveResponse,
-    EquiArenaEnsayoDetail,
-    EquiArenaEnsayoSummary,
-} from "@/types"
+    GranAgregadoPayload,
+    GranAgregadoSaveResponse,
+    GranAgregadoEnsayoDetail,
+    GranAgregadoEnsayoSummary,
+} from '@/types'
 
-const API_URL = import.meta.env.VITE_API_URL || "https://api.geofal.com.pe"
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.geofal.com.pe'
 
 const api = axios.create({
     baseURL: API_URL,
 })
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem('token')
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }
@@ -24,17 +24,17 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            window.dispatchEvent(new CustomEvent("session-expired"))
+            window.dispatchEvent(new CustomEvent('session-expired'))
         }
         return Promise.reject(error)
     },
 )
 
-export async function saveEquiArenaEnsayo(
-    payload: EquiArenaPayload,
+export async function saveGranAgregadoEnsayo(
+    payload: GranAgregadoPayload,
     ensayoId?: number,
-): Promise<EquiArenaSaveResponse> {
-    const { data } = await api.post<EquiArenaSaveResponse>("/api/equi-arena/excel", payload, {
+): Promise<GranAgregadoSaveResponse> {
+    const { data } = await api.post<GranAgregadoSaveResponse>('/api/gran-agregado/excel', payload, {
         params: {
             download: false,
             ensayo_id: ensayoId,
@@ -43,19 +43,19 @@ export async function saveEquiArenaEnsayo(
     return data
 }
 
-export async function saveAndDownloadEquiArenaExcel(
-    payload: EquiArenaPayload,
+export async function saveAndDownloadGranAgregadoExcel(
+    payload: GranAgregadoPayload,
     ensayoId?: number,
 ): Promise<{ blob: Blob; ensayoId?: number }> {
-    const response = await api.post("/api/equi-arena/excel", payload, {
+    const response = await api.post('/api/gran-agregado/excel', payload, {
         params: {
             download: true,
             ensayo_id: ensayoId,
         },
-        responseType: "blob",
+        responseType: 'blob',
     })
 
-    const ensayoIdHeader = response.headers["x-equi-arena-id"]
+    const ensayoIdHeader = response.headers['x-gran-agregado-id']
     const parsedId = Number(ensayoIdHeader)
     return {
         blob: response.data,
@@ -63,15 +63,15 @@ export async function saveAndDownloadEquiArenaExcel(
     }
 }
 
-export async function listEquiArenaEnsayos(limit = 100): Promise<EquiArenaEnsayoSummary[]> {
-    const { data } = await api.get<EquiArenaEnsayoSummary[]>("/api/equi-arena/", {
+export async function listGranAgregadoEnsayos(limit = 100): Promise<GranAgregadoEnsayoSummary[]> {
+    const { data } = await api.get<GranAgregadoEnsayoSummary[]>('/api/gran-agregado/', {
         params: { limit },
     })
     return data
 }
 
-export async function getEquiArenaEnsayoDetail(ensayoId: number): Promise<EquiArenaEnsayoDetail> {
-    const { data } = await api.get<EquiArenaEnsayoDetail>(`/api/equi-arena/${ensayoId}`)
+export async function getGranAgregadoEnsayoDetail(ensayoId: number): Promise<GranAgregadoEnsayoDetail> {
+    const { data } = await api.get<GranAgregadoEnsayoDetail>(`/api/gran-agregado/${ensayoId}`)
     return data
 }
 

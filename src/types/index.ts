@@ -1,28 +1,38 @@
-export interface EquiArenaPayload {
+export interface GranAgregadoPayload {
     muestra: string
     numero_ot: string
     fecha_ensayo: string
     realizado_por: string
 
-    tipo_muestra: "-" | "SUELO" | "AGREGADO FINO"
-    metodo_agitacion: "-" | "MANUAL" | "MECÁNICO"
-    preparacion_muestra: "-" | "PROCEDIMIENTO A" | "PROCEDIMIENTO B"
-    temperatura_solucion_c?: number | null
-    masa_4_medidas_g?: number | null
+    tipo_muestra?: string | null
+    tamano_maximo_particula_visual_in?: string | null
+    forma_particula?: string | null
 
-    tiempo_saturacion_min: Array<number | null>
-    tiempo_agitacion_seg: Array<number | null>
-    tiempo_decantacion_min: Array<number | null>
-    lectura_arcilla_in: Array<number | null>
-    lectura_arena_in: Array<number | null>
-    equivalente_arena_promedio_pct?: number | null
+    masa_muestra_humeda_inicial_total_global_g?: number | null
+    masa_muestra_seca_global_g?: number | null
+    masa_muestra_seca_constante_global_g?: number | null
+    masa_muestra_seca_lavada_global_g?: number | null
 
-    equipo_balanza_01g_codigo?: string | null
-    equipo_horno_110_codigo?: string | null
-    equipo_equivalente_arena_codigo?: string | null
-    equipo_agitador_ea_codigo?: string | null
-    equipo_termometro_codigo?: string | null
-    equipo_tamiz_no4_codigo?: string | null
+    masa_muestra_humeda_inicial_total_fraccionada_g?: number | null
+    masa_muestra_seca_inicial_total_fraccionada_g?: number | null
+    masa_muestra_seca_grueso_g?: number | null
+    masa_muestra_seca_constante_grueso_g?: number | null
+    masa_muestra_humeda_fino_g?: number | null
+    masa_muestra_seca_fino_g?: number | null
+    masa_muestra_humeda_fraccion_g?: number | null
+    masa_muestra_seca_fraccion_g?: number | null
+    masa_muestra_seca_constante_fraccion_g?: number | null
+    contenido_humedad_fraccion_pct?: number | null
+    masa_muestra_seca_lavada_fraccion_g?: number | null
+
+    masa_retenida_tamiz_g: Array<number | null>
+
+    masa_antes_tamizado_g?: number | null
+    masa_despues_tamizado_g?: number | null
+    error_tamizado_pct?: number | null
+
+    balanza_01g_codigo?: string | null
+    horno_codigo?: string | null
     observaciones?: string | null
 
     revisado_por?: string | null
@@ -31,7 +41,7 @@ export interface EquiArenaPayload {
     aprobado_fecha?: string | null
 }
 
-export interface EquiArenaEnsayoSummary {
+export interface GranAgregadoEnsayoSummary {
     id: number
     numero_ensayo: string
     numero_ot: string
@@ -39,23 +49,23 @@ export interface EquiArenaEnsayoSummary {
     muestra?: string | null
     fecha_documento?: string | null
     estado: string
-    equivalente_arena_promedio_pct?: number | null
+    error_tamizado_pct?: number | null
     bucket?: string | null
     object_key?: string | null
     fecha_creacion?: string | null
     fecha_actualizacion?: string | null
 }
 
-export interface EquiArenaEnsayoDetail extends EquiArenaEnsayoSummary {
-    payload?: EquiArenaPayload | null
+export interface GranAgregadoEnsayoDetail extends GranAgregadoEnsayoSummary {
+    payload?: GranAgregadoPayload | null
 }
 
-export interface EquiArenaSaveResponse {
+export interface GranAgregadoSaveResponse {
     id: number
     numero_ensayo: string
     numero_ot: string
     estado: string
-    equivalente_arena_promedio_pct?: number | null
+    error_tamizado_pct?: number | null
     bucket?: string | null
     object_key?: string | null
     fecha_creacion?: string | null

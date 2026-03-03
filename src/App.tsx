@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Toaster } from 'react-hot-toast'
-import EquiArenaForm from './pages/EquiArenaForm'
+import GranAgregadoForm from './pages/GranAgregadoForm'
 import { SessionGuard } from './components/SessionGuard'
 
 const CRM_LOGIN_URL = import.meta.env.VITE_CRM_LOGIN_URL || 'http://localhost:3000/login'
@@ -68,7 +68,7 @@ function App() {
         <div className="min-h-screen bg-background font-sans antialiased">
             <AccessGate>
                 <SessionGuard />
-                <EquiArenaForm />
+                <GranAgregadoForm />
             </AccessGate>
             <Toaster position="top-right" />
         </div>
