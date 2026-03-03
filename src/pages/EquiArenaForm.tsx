@@ -140,41 +140,6 @@ export default function EquiArenaForm() {
         return Math.ceil(valid.reduce((sum, item) => sum + item, 0) / valid.length)
     }, [equivalentByTrial])
 
-    const progressSummary = useMemo(() => {
-        const hasText = (value: string | null | undefined) => Boolean(value && value.trim() !== "" && value.trim() !== "-")
-        const hasNum = (value: number | null | undefined) => value != null
-
-        const sections = [
-            {
-                label: "Encabezado",
-                ready: hasText(form.muestra) && hasText(form.numero_ot) && hasText(form.realizado_por),
-                detail: `${[form.muestra, form.numero_ot, form.realizado_por].filter((v) => hasText(v)).length}/3`,
-            },
-            {
-                label: "Condiciones",
-                ready: form.tipo_muestra !== "-" && form.metodo_agitacion !== "-" && form.preparacion_muestra !== "-",
-                detail: hasNum(form.temperatura_solucion_c) ? `Temp: ${form.temperatura_solucion_c} °C` : undefined,
-            },
-            {
-                label: "Pruebas",
-                ready: form.lectura_arcilla_in.some((v) => v != null) && form.lectura_arena_in.some((v) => v != null),
-                detail: equivalentAverage != null ? `EA prom: ${equivalentAverage}%` : "Sin cálculo",
-            },
-            {
-                label: "Equipos",
-                ready:
-                    form.equipo_balanza_01g_codigo !== "-" &&
-                    form.equipo_horno_110_codigo !== "-" &&
-                    form.equipo_equivalente_arena_codigo !== "-",
-                detail: hasText(form.observaciones) ? "Con observaciones" : "Sin observaciones",
-            },
-        ]
-
-        const readyCount = sections.filter((section) => section.ready).length
-        const completion = Math.round((readyCount / sections.length) * 100)
-        return { completion, sections }
-    }, [equivalentAverage, form])
-
     const setField = useCallback(<K extends keyof EquiArenaPayload>(key: K, value: EquiArenaPayload[K]) => {
         setForm((prev) => ({ ...prev, [key]: value }))
     }, [])
@@ -314,7 +279,7 @@ export default function EquiArenaForm() {
 
     const renderText = (label: string, value: string | undefined | null, onChange: (v: string) => void, placeholder?: string, onBlur?: () => void) => (
         <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">{label}</label>
+            <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
             <input
                 type="text"
                 value={value || ""}
@@ -323,14 +288,14 @@ export default function EquiArenaForm() {
                 placeholder={placeholder}
                 autoComplete="off"
                 data-lpignore="true"
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full h-9 px-3 rounded-md border border-input bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
         </div>
     )
 
     const renderNum = (label: string, value: number | null | undefined, onChange: (v: string) => void) => (
         <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">{label}</label>
+            <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
             <input
                 type="number"
                 step="any"
@@ -338,19 +303,19 @@ export default function EquiArenaForm() {
                 onChange={(e) => onChange(e.target.value)}
                 autoComplete="off"
                 data-lpignore="true"
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full h-9 px-3 rounded-md border border-input bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
         </div>
     )
 
     const renderSelect = (label: string, value: string, options: readonly string[], onChange: (v: string) => void) => (
         <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">{label}</label>
+            <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
             <div className="relative">
                 <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="w-full h-9 pl-3 pr-8 rounded-md border border-input bg-background text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full h-9 pl-3 pr-8 rounded-md border border-input bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                     {options.map((option) => (
                         <option key={option} value={option}>
@@ -358,7 +323,7 @@ export default function EquiArenaForm() {
                         </option>
                     ))}
                 </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600 pointer-events-none" />
             </div>
         </div>
     )
@@ -366,29 +331,39 @@ export default function EquiArenaForm() {
     const trialHeader = ["Prueba 1", "Prueba 2", "Prueba 3"]
 
     return (
-        <div className="max-w-[1780px] mx-auto p-4 md:p-6">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-primary/10">
-                    <Beaker className="h-6 w-6 text-primary" />
+        <div className="min-h-screen bg-slate-100 p-4 md:p-6">
+            <div className="mx-auto max-w-[1360px] space-y-4">
+                <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-sm">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 bg-slate-50">
+                        <Beaker className="h-5 w-5 text-slate-900" />
+                    </div>
+                    <div>
+                        <h1 className="text-base md:text-lg font-semibold text-slate-900">EquiArena - ASTM D2419-22</h1>
+                        <p className="text-xs text-slate-600">Formato fiel a plantilla Excel</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 className="text-xl font-bold text-foreground">Equivalente de Arena - ASTM D2419-22</h1>
-                    <p className="text-sm text-muted-foreground">Formulario operativo EquiArena</p>
-                </div>
-            </div>
 
-            <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-5">
                 <div className="space-y-5">
                     {loadingEdit ? (
-                        <div className="h-10 rounded-lg border border-border bg-muted/40 px-3 text-sm text-muted-foreground flex items-center gap-2">
+                        <div className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 flex items-center gap-2 shadow-sm">
                             <Loader2 className="h-4 w-4 animate-spin" />
                             Cargando ensayo...
                         </div>
                     ) : null}
 
-                    <div className="bg-card border border-border rounded-lg shadow-sm">
-                        <div className="px-4 py-2.5 border-b border-border bg-muted/50 rounded-t-lg">
-                            <h2 className="text-sm font-semibold text-foreground">Encabezado</h2>
+                    <div className="overflow-hidden rounded-2xl border border-slate-300 bg-slate-50 shadow-sm">
+                        <div className="border-b border-slate-300 px-4 py-4 text-center">
+                            <p className="text-[22px] font-semibold leading-tight text-slate-900">LABORATORIO DE ENSAYO DE MATERIALES</p>
+                            <p className="text-lg font-semibold leading-tight text-slate-900">FORMATO EQUI ARENA</p>
+                        </div>
+                        <div className="border-b border-slate-300 bg-slate-100 px-4 py-2 text-center">
+                            <p className="text-sm font-semibold text-slate-900">Standard Test Method for Sand Equivalent Value of Soils and Fine Aggregate</p>
+                            <p className="text-sm font-semibold text-slate-900">ASTM D2419-22</p>
+                        </div>
+
+                    <div className="border border-slate-300 bg-white shadow-sm">
+                        <div className="px-4 py-2.5 border-b border-slate-300 bg-slate-100">
+                            <h2 className="text-sm font-semibold text-slate-900">Encabezado</h2>
                         </div>
                         <div className="p-4 grid md:grid-cols-2 gap-3">
                             {renderText("Muestra", form.muestra, (v) => setField("muestra", v), "1234-SU-26", () =>
@@ -404,9 +379,9 @@ export default function EquiArenaForm() {
                         </div>
                     </div>
 
-                    <div className="bg-card border border-border rounded-lg shadow-sm">
-                        <div className="px-4 py-2.5 border-b border-border bg-muted/50 rounded-t-lg">
-                            <h2 className="text-sm font-semibold text-foreground">Condiciones de ensayo</h2>
+                    <div className="border border-slate-300 bg-white shadow-sm">
+                        <div className="px-4 py-2.5 border-b border-slate-300 bg-slate-100">
+                            <h2 className="text-sm font-semibold text-slate-900">Condiciones de ensayo</h2>
                         </div>
                         <div className="p-4 grid md:grid-cols-2 gap-3">
                             {renderSelect("Tipo de muestra", form.tipo_muestra, TIPO_MUESTRA, (v) => setField("tipo_muestra", v as EquiArenaPayload["tipo_muestra"]))}
@@ -421,17 +396,17 @@ export default function EquiArenaForm() {
                         </div>
                     </div>
 
-                    <div className="bg-card border border-border rounded-lg shadow-sm">
-                        <div className="px-4 py-2.5 border-b border-border bg-muted/50 rounded-t-lg">
-                            <h2 className="text-sm font-semibold text-foreground">Pruebas (H-I-J)</h2>
+                    <div className="border border-slate-300 bg-white shadow-sm">
+                        <div className="px-4 py-2.5 border-b border-slate-300 bg-slate-100">
+                            <h2 className="text-sm font-semibold text-slate-900">Pruebas (H-I-J)</h2>
                         </div>
                         <div className="p-4 overflow-x-auto">
-                            <table className="w-full min-w-[760px] text-sm border border-border rounded-lg overflow-hidden">
-                                <thead className="bg-muted/60">
+                            <table className="w-full min-w-[760px] text-sm border border-slate-300 rounded-lg overflow-hidden">
+                                <thead className="bg-slate-100">
                                     <tr>
-                                        <th className="text-left px-3 py-2 border-b border-border">Campo</th>
+                                        <th className="text-left px-3 py-2 border-b border-slate-300">Campo</th>
                                         {trialHeader.map((label) => (
-                                            <th key={label} className="px-3 py-2 border-b border-border text-center">
+                                            <th key={label} className="px-3 py-2 border-b border-slate-300 text-center">
                                                 {label}
                                             </th>
                                         ))}
@@ -445,7 +420,7 @@ export default function EquiArenaForm() {
                                         { key: "lectura_arcilla_in", label: "Lectura de arcilla (in)" },
                                         { key: "lectura_arena_in", label: "Lectura de arena (in)" },
                                     ].map((row) => (
-                                        <tr key={row.key} className="border-b border-border last:border-none">
+                                        <tr key={row.key} className="border-b border-slate-300 last:border-none">
                                             <td className="px-3 py-2 font-medium">{row.label}</td>
                                             {Array.from({ length: TRIAL_COUNT }, (_, idx) => (
                                                 <td key={idx} className="px-2 py-2">
@@ -454,16 +429,16 @@ export default function EquiArenaForm() {
                                                         step="any"
                                                         value={(form[row.key as TrialFieldKey][idx] as number | null) ?? ""}
                                                         onChange={(e) => setTrialValue(row.key as TrialFieldKey, idx, e.target.value)}
-                                                        className="w-full h-8 px-2 rounded border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                                        className="w-full h-8 px-2 rounded border border-input bg-white text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                                                     />
                                                 </td>
                                             ))}
                                         </tr>
                                     ))}
                                     <tr>
-                                        <td className="px-3 py-2 font-medium bg-muted/40">EA por prueba (%)</td>
+                                        <td className="px-3 py-2 font-medium bg-slate-100">EA por prueba (%)</td>
                                         {equivalentByTrial.map((value, idx) => (
-                                            <td key={idx} className="px-2 py-2 text-center font-semibold bg-muted/30">
+                                            <td key={idx} className="px-2 py-2 text-center font-semibold bg-slate-50">
                                                 {value ?? "-"}
                                             </td>
                                         ))}
@@ -477,19 +452,19 @@ export default function EquiArenaForm() {
                                                 value={form.equivalente_arena_promedio_pct ?? ""}
                                                 onChange={(e) => setField("equivalente_arena_promedio_pct", parseNum(e.target.value))}
                                                 placeholder={equivalentAverage != null ? String(equivalentAverage) : ""}
-                                                className="w-full h-8 px-2 rounded border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                                className="w-full h-8 px-2 rounded border border-input bg-white text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                                             />
                                         </td>
-                                        <td className="px-2 py-2 text-center text-xs text-muted-foreground">{equivalentAverage != null ? `Auto: ${equivalentAverage}` : "Sin cálculo"}</td>
+                                        <td className="px-2 py-2 text-center text-xs text-slate-600">{equivalentAverage != null ? `Auto: ${equivalentAverage}` : "Sin cálculo"}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div className="bg-card border border-border rounded-lg shadow-sm">
-                        <div className="px-4 py-2.5 border-b border-border bg-muted/50 rounded-t-lg">
-                            <h2 className="text-sm font-semibold text-foreground">Equipos y observaciones</h2>
+                    <div className="border border-slate-300 bg-white shadow-sm">
+                        <div className="px-4 py-2.5 border-b border-slate-300 bg-slate-100">
+                            <h2 className="text-sm font-semibold text-slate-900">Equipos y observaciones</h2>
                         </div>
                         <div className="p-4 grid md:grid-cols-2 gap-3">
                             {renderText("Balanza 0.1 g", form.equipo_balanza_01g_codigo, (v) => setField("equipo_balanza_01g_codigo", v))}
@@ -504,9 +479,9 @@ export default function EquiArenaForm() {
                         </div>
                     </div>
 
-                    <div className="bg-card border border-border rounded-lg shadow-sm">
-                        <div className="px-4 py-2.5 border-b border-border bg-muted/50 rounded-t-lg">
-                            <h2 className="text-sm font-semibold text-foreground">Cierre</h2>
+                    <div className="border border-slate-300 bg-white shadow-sm">
+                        <div className="px-4 py-2.5 border-b border-slate-300 bg-slate-100">
+                            <h2 className="text-sm font-semibold text-slate-900">Cierre</h2>
                         </div>
                         <div className="p-4 grid md:grid-cols-2 gap-3">
                             {renderSelect("Revisado por", form.revisado_por || "-", REVISORES, (v) => setField("revisado_por", v))}
@@ -519,33 +494,44 @@ export default function EquiArenaForm() {
                             )}
                         </div>
                     </div>
-                </div>
-
-                <aside className="mt-5 xl:mt-0 space-y-4">
-                    <div className="bg-card border border-border rounded-lg shadow-sm p-4">
-                        <p className="text-sm font-semibold mb-2">Estado del formulario</p>
-                        <div className="h-2 rounded-full bg-muted overflow-hidden">
-                            <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progressSummary.completion}%` }} />
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-2">{progressSummary.completion}% completado</p>
-                        <div className="mt-3 space-y-2">
-                            {progressSummary.sections.map((section) => (
-                                <div key={section.label} className="rounded-md border border-border px-3 py-2 text-xs">
-                                    <div className="flex items-center justify-between">
-                                        <span className="font-medium">{section.label}</span>
-                                        <span className={section.ready ? "text-green-600" : "text-amber-600"}>{section.ready ? "OK" : "Pendiente"}</span>
-                                    </div>
-                                    {section.detail ? <p className="text-muted-foreground mt-1">{section.detail}</p> : null}
-                                </div>
-                            ))}
-                        </div>
+                    <div className="border border-slate-300 bg-white p-3">
+                        <table className="w-full text-xs">
+                            <tbody>
+                                <tr className="border-b border-slate-300">
+                                    <td className="px-2 py-2">EA prueba 1</td>
+                                    <td className="px-2 py-2 text-right font-semibold">{equivalentByTrial[0] ?? '-'}</td>
+                                </tr>
+                                <tr className="border-b border-slate-300">
+                                    <td className="px-2 py-2">EA prueba 2</td>
+                                    <td className="px-2 py-2 text-right font-semibold">{equivalentByTrial[1] ?? '-'}</td>
+                                </tr>
+                                <tr className="border-b border-slate-300">
+                                    <td className="px-2 py-2">EA prueba 3</td>
+                                    <td className="px-2 py-2 text-right font-semibold">{equivalentByTrial[2] ?? '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-2 py-2">EA promedio</td>
+                                    <td className="px-2 py-2 text-right font-semibold">{form.equivalente_arena_promedio_pct ?? equivalentAverage ?? '-'}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div className="bg-card border border-border rounded-lg shadow-sm p-4 space-y-3">
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <button
+                            onClick={clearAll}
+                            disabled={loading}
+                            className="h-11 rounded-lg border border-slate-300 bg-white text-slate-700 font-medium hover:bg-slate-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                            Limpiar
+                        </button>
                         <button
                             onClick={() => void save(false)}
                             disabled={loading}
-                            className="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition disabled:opacity-60 flex items-center justify-center gap-2"
+                            className="h-11 rounded-lg border border-slate-900 bg-slate-900 text-white font-semibold hover:bg-black transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                         >
                             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                             Guardar
@@ -553,22 +539,15 @@ export default function EquiArenaForm() {
                         <button
                             onClick={() => void save(true)}
                             disabled={loading}
-                            className="w-full h-10 rounded-md border border-border text-sm font-medium hover:bg-muted transition disabled:opacity-60 flex items-center justify-center gap-2"
+                            className="h-11 rounded-lg border border-emerald-700 bg-emerald-700 text-white font-semibold hover:bg-emerald-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                         >
-                            <Download className="h-4 w-4" />
-                            Guardar y descargar
-                        </button>
-                        <button
-                            onClick={clearAll}
-                            disabled={loading}
-                            className="w-full h-10 rounded-md border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition disabled:opacity-60 flex items-center justify-center gap-2"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                            Limpiar
+                            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                            Guardar y Descargar
                         </button>
                     </div>
-                </aside>
+                </div>
             </div>
         </div>
     )
 }
+

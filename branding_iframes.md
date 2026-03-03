@@ -1,19 +1,20 @@
-# Branding Iframes - Proctor
+# Branding Iframes - Gran Agregado / EquiArena
 
-Documento de referencia para mantener consistente el branding del microfrontend de Proctor y su visualizacion embebida en iframe dentro del CRM.
+Documento de referencia para mantener consistente el branding del microfrontend y su visualizacion embebida en iframe dentro del CRM.
 
 ## Alcance
 
-- Microfrontend: `proctor-crm`
-- Shell embebedor: `crm-geofal` modulo Proctor
-- Flujo: CRM abre `https://proctor.geofal.com.pe` en dialog modal con `token` y opcionalmente `ensayo_id`
+- Microfrontend: `gran-agregado`
+- Formularios soportados: `GranAgregadoForm` y `EquiArenaForm`
+- Shell embebedor: `crm-geofal` modulo Gran Agregado / EquiArena
+- Flujo: CRM abre `https://gran-agregado.geofal.com.pe` en dialog modal con `token` y opcionalmente `ensayo_id`
 
 ## Reglas visuales
 
-- Mantener la paleta y tipografia definida en `src/index.css`.
-- Reusar componentes base (`Section`, `Input`, `SelectField`) para consistencia con humedad/cbr.
-- Mantener el orden visual de la hoja oficial `Template_Proctor.xlsx` en el formulario web.
+- Mantener estilo tipo hoja tecnica, fiel a las plantillas Excel oficiales de Gran Agregado y EquiArena.
+- Preservar estructura de encabezado institucional y bloque ASTM correspondiente (C136/C136M-25 o D2419-22).
 - Mantener botonera final con accion doble: `Guardar` y `Guardar y Descargar`.
+- Mantener consistencia de fuentes, bordes y jerarquia visual con GE Fino, GE Grueso y Gran Suelo.
 
 ## Contrato iframe
 
@@ -23,7 +24,8 @@ Documento de referencia para mantener consistente el branding del microfrontend 
 
 ## Archivos clave
 
-- `proctor-crm/src/pages/ProctorForm.tsx`
-- `proctor-crm/src/App.tsx`
-- `proctor-crm/src/components/SessionGuard.tsx`
-- `crm-geofal/src/components/dashboard/proctor-module.tsx`
+- `gran-agregado/src/pages/GranAgregadoForm.tsx`
+- `gran-agregado/src/pages/EquiArenaForm.tsx`
+- `gran-agregado/src/App.tsx`
+- `gran-agregado/src/components/SessionGuard.tsx`
+- `crm-geofal/src/components/dashboard/gran-agregado-module.tsx`
