@@ -33,6 +33,7 @@ const EQ_BALANZA = ['-', 'EQP-0046'] as const
 const EQ_HORNO = ['-', 'EQP-0049'] as const
 const REVISADO = ['-', 'FABIAN LA ROSA'] as const
 const APROBADO = ['-', 'IRMA COAQUIRA'] as const
+const ERROR_TAMIZADO_MAX_PCT = 0.3
 
 const initialState = (): GranAgregadoPayload => ({
     muestra: '',
@@ -67,7 +68,7 @@ const initialState = (): GranAgregadoPayload => ({
     revisado_por: '-',
     revisado_fecha: '',
     aprobado_por: '-',
-    aprobado_fecha: '',
+    aprobado_fecha: formatTodayShortDate(),
 })
 
 const parseNum = (v: unknown): number | null => {
@@ -77,6 +78,13 @@ const parseNum = (v: unknown): number | null => {
 }
 
 const getCurrentYearShort = () => new Date().getFullYear().toString().slice(-2)
+const formatTodayShortDate = () => {
+    const d = new Date()
+    const dd = String(d.getDate()).padStart(2, '0')
+    const mm = String(d.getMonth() + 1).padStart(2, '0')
+    const yy = String(d.getFullYear()).slice(-2)
+    return `${dd}/${mm}/${yy}`
+}
 
 const normalizeMuestraCode = (raw: string): string => {
     const value = raw.trim().toUpperCase()
@@ -307,6 +315,19 @@ export default function GranAgregadoForm() {
         </div>
     )
 
+    const renderNumReadOnly = (label: string, value: number | null | undefined) => (
+        <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
+            <input
+                type="number"
+                step="any"
+                value={value ?? ''}
+                readOnly
+                className="w-full h-9 px-3 rounded-md border border-input bg-slate-50 text-sm focus:outline-none"
+            />
+        </div>
+    )
+
     const renderSelect = (label: string, value: string, options: readonly string[], onChange: (v: string) => void) => (
         <div>
             <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
@@ -464,10 +485,11 @@ export default function GranAgregadoForm() {
                         <div className="px-4 py-2.5 border-b border-slate-300 bg-slate-100">
                             <h2 className="text-sm font-semibold text-slate-900">Control de error de tamizado</h2>
                         </div>
-                        <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
                             {renderNum('Masa antes tamizado (g)', form.masa_antes_tamizado_g, (v) => setField('masa_antes_tamizado_g', parseNum(v)))}
                             {renderNum('Masa después tamizado (g)', form.masa_despues_tamizado_g, (v) => setField('masa_despues_tamizado_g', parseNum(v)))}
-                            {renderNum('Error tamizado (%)', form.error_tamizado_pct, (v) => setField('error_tamizado_pct', parseNum(v)))}
+                            {renderNumReadOnly('Error tamizado (%)', form.error_tamizado_pct ?? derivedError)}
+                            {renderNumReadOnly('Error máximo permitido (%)', ERROR_TAMIZADO_MAX_PCT)}
                         </div>
                     </div>
 
