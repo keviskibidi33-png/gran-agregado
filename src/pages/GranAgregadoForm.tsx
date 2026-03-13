@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { Beaker, ChevronDown, Download, Loader2, Trash2 } from 'lucide-react'
 import { getGranAgregadoEnsayoDetail, saveAndDownloadGranAgregadoExcel, saveGranAgregadoEnsayo } from '@/services/api'
 import type { GranAgregadoPayload } from '@/types'
+import FormatConfirmModal from '../components/FormatConfirmModal'
 
 const DRAFT_KEY = 'gran_agregado_form_draft_v1'
 const DEBOUNCE_MS = 700
@@ -236,6 +237,8 @@ export default function GranAgregadoForm() {
         localStorage.removeItem(`${DRAFT_KEY}:${editingEnsayoId ?? 'new'}`)
         setForm(initialState())
     }, [editingEnsayoId])
+    const [pendingFormatAction, setPendingFormatAction] = useState<boolean | null>(null)
+
 
     const save = useCallback(
         async (download: boolean) => {
@@ -582,14 +585,14 @@ export default function GranAgregadoForm() {
                             Limpiar todo
                         </button>
                         <button
-                            onClick={() => void save(false)}
+                            onClick={() => setPendingFormatAction(false)}
                             disabled={loading}
                             className="h-11 rounded-lg border border-primary text-primary font-semibold hover:bg-primary/10 transition-colors disabled:opacity-50"
                         >
                             {loading ? 'Guardando...' : 'Guardar'}
                         </button>
                         <button
-                            onClick={() => void save(true)}
+                            onClick={() => setPendingFormatAction(true)}
                             disabled={loading}
                             className="h-11 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                         >
@@ -632,6 +635,19 @@ export default function GranAgregadoForm() {
                     </div>
                 </div>
             </div>
+            <FormatConfirmModal
+                open={pendingFormatAction !== null}
+                formatLabel={`Formato N-xxxx-AG-${new Date().getFullYear().toString().slice(-2)} GR. AGREGADO`}
+                actionLabel={pendingFormatAction ? 'Guardar y Descargar' : 'Guardar'}
+                onClose={() => setPendingFormatAction(null)}
+                onConfirm={() => {
+                    if (pendingFormatAction === null) return
+                    const shouldDownload = pendingFormatAction
+                    setPendingFormatAction(null)
+                    void save(shouldDownload)
+                }}
+            />
+
         </div>
     )
 }
