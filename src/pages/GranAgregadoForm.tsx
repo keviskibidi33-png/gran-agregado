@@ -315,19 +315,6 @@ export default function GranAgregadoForm() {
         </div>
     )
 
-    const renderNumReadOnly = (label: string, value: number | null | undefined) => (
-        <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
-            <input
-                type="number"
-                step="any"
-                value={value ?? ''}
-                readOnly
-                className="w-full h-9 px-3 rounded-md border border-input bg-slate-50 text-sm focus:outline-none"
-            />
-        </div>
-    )
-
     const renderSelect = (label: string, value: string, options: readonly string[], onChange: (v: string) => void) => (
         <div>
             <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
@@ -485,11 +472,74 @@ export default function GranAgregadoForm() {
                         <div className="px-4 py-2.5 border-b border-slate-300 bg-slate-100">
                             <h2 className="text-sm font-semibold text-slate-900">Control de error de tamizado</h2>
                         </div>
-                        <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
-                            {renderNum('Masa antes tamizado (g)', form.masa_antes_tamizado_g, (v) => setField('masa_antes_tamizado_g', parseNum(v)))}
-                            {renderNum('Masa después tamizado (g)', form.masa_despues_tamizado_g, (v) => setField('masa_despues_tamizado_g', parseNum(v)))}
-                            {renderNumReadOnly('Error tamizado (%)', form.error_tamizado_pct ?? derivedError)}
-                            {renderNumReadOnly('Error máximo permitido (%)', ERROR_TAMIZADO_MAX_PCT)}
+                        <div className="p-4 grid grid-cols-1 xl:grid-cols-[1.2fr_420px] gap-4 items-start">
+                            <div className="border border-slate-300">
+                                <div className="border-b border-slate-300 bg-slate-100 px-2 py-1 text-center text-xs font-semibold text-slate-800">
+                                    Error máximo permitido {ERROR_TAMIZADO_MAX_PCT}%
+                                </div>
+                                <table className="w-full text-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td className="border-b border-r border-slate-300 px-2 py-2">
+                                                Masa muestra ANTES tamizado (g)
+                                            </td>
+                                            <td className="border-b border-slate-300 px-2 py-2">
+                                                <input
+                                                    type="number"
+                                                    step="any"
+                                                    value={form.masa_antes_tamizado_g ?? ''}
+                                                    onChange={(e) => setField('masa_antes_tamizado_g', parseNum(e.target.value))}
+                                                    autoComplete="off"
+                                                    data-lpignore="true"
+                                                    className="w-full h-9 px-3 rounded-md border border-input bg-white text-sm"
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="border-b border-r border-slate-300 px-2 py-2">
+                                                Masa muestra DESPUES tamizado (g)
+                                            </td>
+                                            <td className="border-b border-slate-300 px-2 py-2">
+                                                <input
+                                                    type="number"
+                                                    step="any"
+                                                    value={form.masa_despues_tamizado_g ?? ''}
+                                                    onChange={(e) => setField('masa_despues_tamizado_g', parseNum(e.target.value))}
+                                                    autoComplete="off"
+                                                    data-lpignore="true"
+                                                    className="w-full h-9 px-3 rounded-md border border-input bg-white text-sm"
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="border-r border-slate-300 px-2 py-2 font-semibold">
+                                                Error de tamizado ((a-b)/(a)*100)
+                                            </td>
+                                            <td className="px-2 py-2">
+                                                <input
+                                                    type="number"
+                                                    step="any"
+                                                    value={form.error_tamizado_pct ?? derivedError ?? ''}
+                                                    readOnly
+                                                    className="w-full h-9 px-3 rounded-md border border-input bg-slate-50 text-sm"
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="border border-slate-300 bg-white">
+                                <div className="border-b border-slate-300 bg-slate-100 px-2 py-1 text-center text-xs font-semibold text-slate-800">
+                                    Referencia Excel
+                                </div>
+                                <div className="p-2">
+                                    <img
+                                        src="/gran-agregado-ref.png"
+                                        alt="Referencia de error de tamizado"
+                                        className="w-full rounded-md border border-slate-200"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
