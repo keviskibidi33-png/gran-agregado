@@ -106,9 +106,9 @@ const normalizeMuestraCode = (raw: string): string => {
 
     const compact = value.replace(/\s+/g, '')
     const year = getCurrentYearShort()
-    const match = compact.match(/^(\d+)(?:-SU)?(?:-(\d{2}))?$/)
+    const match = compact.match(/^(\d+)(?:-(?:SU|AG))?(?:-(\d{2}))?$/)
     if (match) {
-        return `${match[1]}-SU-${match[2] || year}`
+        return `${match[1]}-AG-${match[2] || year}`
     }
     return value
 }
@@ -387,7 +387,7 @@ export default function GranAgregadoForm() {
                             <h2 className="text-sm font-semibold text-slate-900">Encabezado</h2>
                         </div>
                         <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-                            {renderText('Muestra *', form.muestra, (v) => setField('muestra', v), '123-SU-26', () => applyFormattedField('muestra', normalizeMuestraCode))}
+                            {renderText('Muestra *', form.muestra, (v) => setField('muestra', v), '123-AG-26', () => applyFormattedField('muestra', normalizeMuestraCode))}
                             {renderText('N OT *', form.numero_ot, (v) => setField('numero_ot', v), '1234-26', () => applyFormattedField('numero_ot', normalizeNumeroOtCode))}
                             {renderText('Fecha ensayo', form.fecha_ensayo, (v) => setField('fecha_ensayo', v), 'DD/MM/AA', () => applyFormattedField('fecha_ensayo', normalizeFlexibleDate))}
                             {renderText('Realizado por *', form.realizado_por, (v) => setField('realizado_por', v))}
