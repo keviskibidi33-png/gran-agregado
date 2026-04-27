@@ -389,7 +389,7 @@ export default function GranAgregadoForm() {
                         <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-3">
                             {renderText('Muestra *', form.muestra, (v) => setField('muestra', v), '123-AG-26', () => applyFormattedField('muestra', normalizeMuestraCode))}
                             {renderText('N OT *', form.numero_ot, (v) => setField('numero_ot', v), '1234-26', () => applyFormattedField('numero_ot', normalizeNumeroOtCode))}
-                            {renderText('Fecha ensayo', form.fecha_ensayo, (v) => setField('fecha_ensayo', v), 'DD/MM/AA', () => applyFormattedField('fecha_ensayo', normalizeFlexibleDate))}
+                            {renderText('Fecha ensayo', form.fecha_ensayo, (v) => setField('fecha_ensayo', v), 'YYYY/MM/DD', () => applyFormattedField('fecha_ensayo', normalizeFlexibleDate))}
                             {renderText('Realizado por *', form.realizado_por, (v) => setField('realizado_por', v))}
                         </div>
                     </div>
@@ -581,8 +581,8 @@ export default function GranAgregadoForm() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {renderSelect('Revisado por', form.revisado_por || '-', REVISADO, (v) => setField('revisado_por', v))}
                                     {renderSelect('Aprobado por', form.aprobado_por || '-', APROBADO, (v) => setField('aprobado_por', v))}
-                                    {renderText('Fecha revisado', form.revisado_fecha || '', (v) => setField('revisado_fecha', v), 'DD/MM/AA', () => applyFormattedField('revisado_fecha', normalizeFlexibleDate))}
-                                    {renderText('Fecha aprobado', form.aprobado_fecha || '', (v) => setField('aprobado_fecha', v), 'DD/MM/AA', () => applyFormattedField('aprobado_fecha', normalizeFlexibleDate))}
+                                    {renderText('Fecha revisado', form.revisado_fecha || '', (v) => setField('revisado_fecha', v), 'YYYY/MM/DD', () => applyFormattedField('revisado_fecha', normalizeFlexibleDate))}
+                                    {renderText('Fecha aprobado', form.aprobado_fecha || '', (v) => setField('aprobado_fecha', v), 'YYYY/MM/DD', () => applyFormattedField('aprobado_fecha', normalizeFlexibleDate))}
                                 </div>
                             </div>
                         </div>
