@@ -44,7 +44,7 @@ const SIEVE_LABELS = [
 ] as const
 
 const EQ_BALANZA = ['-', 'EQP-0046'] as const
-const EQ_HORNO = ['-', 'EQP-0049'] as const
+const EQ_HORNO = ['-', 'EQP-0150'] as const
 const REVISADO = ['-', 'FABIAN LA ROSA'] as const
 const APROBADO = ['-', 'IRMA COAQUIRA'] as const
 const ERROR_TAMIZADO_MAX_PCT = 0.3
