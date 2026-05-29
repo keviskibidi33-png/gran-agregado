@@ -181,6 +181,8 @@ export default function GranAgregadoForm() {
     const [loading, setLoading] = useState(false)
     const [loadingEdit, setLoadingEdit] = useState(false)
     const [editingEnsayoId, setEditingEnsayoId] = useState<number | null>(() => getEnsayoId())
+    const [showDraftBanner, setShowDraftBanner] = useState(false)
+    const [draftData, setDraftData] = useState<GranAgregadoPayload | null>(null)
 
     const filledSieves = useMemo(() => form.masa_retenida_tamiz_g.filter((v) => v != null).length, [form.masa_retenida_tamiz_g])
     const totalSieves = useMemo(
@@ -213,6 +215,7 @@ export default function GranAgregadoForm() {
     }, [])
 
     useEffect(() => {
+        if (editingEnsayoId) return
         const raw = localStorage.getItem(`${DRAFT_KEY}:${editingEnsayoId ?? 'new'}`)
         if (!raw) return
         try {
@@ -223,11 +226,12 @@ export default function GranAgregadoForm() {
     }, [editingEnsayoId])
 
     useEffect(() => {
+        if (showDraftBanner || loadingEdit) return
         const timer = window.setTimeout(() => {
             localStorage.setItem(`${DRAFT_KEY}:${editingEnsayoId ?? 'new'}`, JSON.stringify(form))
         }, DEBOUNCE_MS)
         return () => window.clearTimeout(timer)
-    }, [editingEnsayoId, form])
+    }, [editingEnsayoId, form, showDraftBanner, loadingEdit])
 
     useEffect(() => {
         if (!editingEnsayoId) return
@@ -236,7 +240,22 @@ export default function GranAgregadoForm() {
             setLoadingEdit(true)
             try {
                 const detail = await getGranAgregadoEnsayoDetail(editingEnsayoId)
-                if (!cancelled && detail.payload) setForm({ ...initialState(), ...detail.payload })
+                if (!cancelled && detail.payload) {
+                    const serverState = { ...initialState(), ...detail.payload }
+                    const rawDraft = localStorage.getItem(`${DRAFT_KEY}:${editingEnsayoId}`)
+                    if (rawDraft) {
+                        try {
+                            const draftState = { ...initialState(), ...JSON.parse(rawDraft) }
+                            if (JSON.stringify(draftState) !== JSON.stringify(serverState)) {
+                                setDraftData(draftState)
+                                setShowDraftBanner(true)
+                            }
+                        } catch {
+                            // ignore draft parse error
+                        }
+                    }
+                    setForm(serverState)
+                }
             } catch {
                 toast.error('No se pudo cargar ensayo Gran Agregado para edición.')
             } finally {
@@ -367,6 +386,41 @@ export default function GranAgregadoForm() {
                         <p className="text-xs text-slate-600">Formato fiel a plantilla Excel</p>
                     </div>
                 </div>
+
+                {showDraftBanner ? (
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="flex items-start gap-2.5 text-sm text-amber-800">
+                            <span className="text-lg leading-none">⚠️</span>
+                            <div>
+                                <p className="font-semibold">Cambios locales no guardados detectados</p>
+                                <p className="text-xs text-amber-700 mt-0.5">Se encontró un borrador en este navegador que tiene diferencias con la versión guardada en el servidor.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2 self-end sm:self-auto">
+                            <button
+                                onClick={() => {
+                                    if (draftData) setForm(draftData)
+                                    setShowDraftBanner(false)
+                                    toast.success('Borrador local recuperado con éxito.')
+                                }}
+                                className="rounded-lg bg-amber-600 hover:bg-amber-700 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition"
+                            >
+                                Recuperar Trabajo
+                            </button>
+                            <button
+                                onClick={() => {
+                                    localStorage.removeItem(`${DRAFT_KEY}:${editingEnsayoId ?? 'new'}`)
+                                    setShowDraftBanner(false)
+                                    setDraftData(null)
+                                    toast.success('Borrador descartado.')
+                                }}
+                                className="rounded-lg border border-amber-300 bg-white hover:bg-amber-50 px-3.5 py-1.5 text-xs font-semibold text-amber-800 shadow-sm transition"
+                            >
+                                Descartar
+                            </button>
+                        </div>
+                    </div>
+                ) : null}
 
                 <div className="space-y-5">
                     {loadingEdit ? (
